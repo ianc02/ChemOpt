@@ -30,19 +30,20 @@ public class Simulate {
     public Molecule product;
     public String opt;
 
-    public Learner learner;
+    public PositveLearner positveLearner;
+    public NegativeLearner negativeLearner;
 
 
 
     public Simulate(){
-        learner = new Learner(this);
+        positveLearner = new PositveLearner(this);
+        negativeLearner = new NegativeLearner(this);
         temp = 25.0;
         pH = 7.0;
         optimizations = new ArrayList<>();
         optimizations.add("YIELD");
         optimizations.add("TIME");
         optimizations.add("PURITY");
-        optimizations.add("COST");
         products = new HashMap<>();
         lowerAllReactants = new ArrayList<>();
         stringmoleculeHashMap = new HashMap<>();
@@ -193,7 +194,7 @@ public class Simulate {
             decision = decision.toUpperCase(Locale.ROOT);
             if (optimizations.contains(decision)) {
                 opt = decision;
-                optimize(m1, decision);
+                setOptimizations(m1, decision);
                 break;
             } else {
                 System.out.println("That is not an available optimization, please try again.");
@@ -203,19 +204,59 @@ public class Simulate {
     }
 
 
-    private void optimize(Molecule m1, String dec){
-        learner.getstate().setpH(7.0);
-        learner.getstate().setTemp(25.0);
-        learner.getstate().setM2(null);
-        learner.getstate().setM1(null);
-        for (int i = 0; i < 500000; i++) {
-            learner.control();
+    private void setOptimizations(Molecule m1, String dec) {
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        System.out.println("");
+        while (true) {
+            System.out.println("Would you like the POSITIVE or NEGATIVE learner?");
+            String decision = "";
+            System.out.println("");
+            System.out.println("Please pick one.");
+            decision = input.nextLine();
+            decision = decision.toLowerCase(Locale.ROOT);
+            if (decision.equals("positive")) {
+                optimize(m1, decision);
+                break;
+            } else if (decision.equals("negative")) {
+                negOptimize(m1, decision);
+                break;
+            } else {
+                System.out.println("That is not an available optimization, please try again.");
+                System.out.println("");
+            }
         }
-       State state = learner.control();
+    }
+
+    private void optimize(Molecule m1, String dec){
+        positveLearner.getstate().setpH(7.0);
+        positveLearner.getstate().setTemp(25.0);
+        positveLearner.getstate().setM2(null);
+        positveLearner.getstate().setM1(null);
+        for (int i = 0; i < 500000; i++) {
+            positveLearner.control();
+        }
+       State state = positveLearner.control();
         if (!(state.getM1() == null)){System.out.println(state.getM1().getName());}
        if (!(state.getM2() == null)){System.out.println(state.getM2().getName());}
        System.out.println(state.getTemp());
        System.out.println(state.getpH());
+    }
+
+    private void negOptimize(Molecule m1, String dec){
+        negativeLearner.getstate().setpH(7.0);
+        negativeLearner.getstate().setTemp(25.0);
+        negativeLearner.getstate().setM2(null);
+        negativeLearner.getstate().setM1(null);
+        for (int i = 0; i < 500000; i++) {
+            negativeLearner.control();
+        }
+        State state = negativeLearner.control();
+        if (!(state.getM1() == null)){System.out.println(state.getM1().getName());}
+        if (!(state.getM2() == null)){System.out.println(state.getM2().getName());}
+        System.out.println(state.getTemp());
+        System.out.println(state.getpH());
     }
 
 
@@ -230,7 +271,6 @@ public class Simulate {
         Simulate s = new Simulate();
         Scanner input = new Scanner(System.in);
         ArrayList<Molecule> allReactants = s.getAllReactants();
-        System.out.println("Start");
 
 
 

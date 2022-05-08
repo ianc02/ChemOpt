@@ -7,16 +7,15 @@ import Core.Duple;
 import Core.State;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Learner {
+public class NegativeLearner {
 
     private Simulate sim;
     private Qtable q;
 
     private State state;
     private int r;
-    public Learner(Simulate sim){
+    public NegativeLearner(Simulate sim){
         this.state = new State();
         state.setTemp(25.0);
         state.setpH(7.0);
@@ -60,28 +59,34 @@ public class Learner {
 
     public Integer reward(){
         if (state.getM1() == null){
-            return 0;
+            return -1;
         }
         if (state.getM2() == null){
-            return 0;
+            return -1;
         }
 
         if (sim.getOpt().equals("YIELD")){
-            //TODO
-            // START HERE DINGUS
             for (Duple<Integer, ArrayList<Molecule>> prods:
                     sim.getProducts().get(sim.getProduct())) {
                 if (prods.getSecond().contains(state.getM1()) && prods.getSecond().contains(state.getM2())){
                     return prods.getFirst() * 100;
                 }
             }
-            return 0;
+            return -1;
         }
 
         if (sim.getOpt().equals("TIME")){
-//            System.out.println(state.getTemp());
+
             if (0 < state.getTemp() && state.getTemp() <99.0){
                 return (int) (state.getTemp()-100);
+            }
+            else{
+                sim.setOpt("YIELD");
+            }
+        }
+        if (sim.getOpt().equals("PURITY")){
+            if (state.getpH() != 7.0){
+                return (int) (-1 * state.getpH() - 7);
             }
             else{
                 sim.setOpt("YIELD");
