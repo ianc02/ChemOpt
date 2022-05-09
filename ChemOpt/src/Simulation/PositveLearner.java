@@ -86,6 +86,9 @@ public class PositveLearner {
         }
         if (sim.getOpt().equals("PURITY")){
             if (state.getpH() != 7.0){
+                if (state.getpH() < 7){
+                    return (int) (state.getpH() - 7);
+                }
                 return (int) (-1 * state.getpH() - 7);
             }
             else{

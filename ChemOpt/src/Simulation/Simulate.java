@@ -272,7 +272,12 @@ public class Simulate {
         Scanner input = new Scanner(System.in);
         ArrayList<Molecule> allReactants = s.getAllReactants();
 
-
+        System.out.println("Welcome to the Chemical Reaction Optimizer!");
+        System.out.println("Please type in what you would like to do.");
+        System.out.println("Just as a fair warning, there is a bug that I was unable to figure out");
+        System.out.println("That causes Reactants to be missing after repeated run throughs. If this");
+        System.out.println("occurs, please rerun the program. I am sorry for the inconvenience.");
+        System.out.println("");
 
 
         label:
